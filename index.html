@@ -24,7 +24,7 @@
             position: relative;
         }
 
-        /* 背景與流光特效 (保持原樣) */
+        /* 背景特效層 */
         body::before {
             content: "";
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -48,7 +48,7 @@
         }
         @keyframes rotateBg { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* 層級樣式 */
+        /* 層級與動畫 */
         .layer { 
             display: none; width: 100%; height: 100%; 
             opacity: 0; transform: translateY(10px);
@@ -64,19 +64,18 @@
             text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
         }
 
-        /* 按鈕基礎樣式 */
+        /* 按鈕樣式 (還原原始比例) */
         .square-grid { width: 100%; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2vh; }
         .square-btn {
             width: 20vh; aspect-ratio: 1 / 1; background: var(--btn-bg);
             border: 2px solid var(--btn-border); border-radius: 25px;
-            color: #fff; font-size: 4vh; font-weight: bold; cursor: pointer;
+            color: #fff; font-size: 4.5vh; font-weight: bold; cursor: pointer;
             display: flex; align-items: center; justify-content: center; transition: 0.3s;
             backdrop-filter: blur(5px);
         }
         .square-btn:active { transform: scale(0.96); border-color: #ff8c00; background: rgba(255, 140, 0, 0.3); }
 
-        /* 問卷按鈕專用 (寬一點) */
-        .survey-btn { width: 80%; height: 10vh; font-size: 3vh; border-radius: 15px; }
+        .survey-btn { width: 85%; height: 10vh; aspect-ratio: auto; font-size: 3vh; border-radius: 15px; }
 
         .list-btn {
             width: 90%; min-height: 8vh; background: var(--btn-bg); border: 1px solid var(--btn-border);
@@ -92,10 +91,10 @@
         .img-wrapper { width: 100%; max-height: 28vh; margin-bottom: 2.5vh; display: none; border: 1px solid var(--btn-border); border-radius: 10px; overflow: hidden; position: relative; }
         .detail-image { width: 100%; max-height: 28vh; object-fit: contain; opacity: 0; transition: opacity 0.5s; }
         .detail-text { font-size: 2.6vh; line-height: 1.6; color: #ddd; }
-        .back-btn { margin-top: auto; margin-bottom: 3vh; width: 50%; height: 7vh; background: #111; border: 1px solid #444; border-radius: 40px; color: #aaa; font-size: 2.2vh; cursor: pointer; }
-        .home-btn { border: 1px solid var(--primary-glow) !important; color: var(--primary-glow) !important; }
         
-        /* 載入動畫 */
+        .back-btn { margin-top: auto; margin-bottom: 3vh; width: 50%; height: 7vh; background: #111; border: 1px solid #444; border-radius: 40px; color: #aaa; font-size: 2.2vh; cursor: pointer; }
+        .home-btn { border: 1px solid var(--primary-glow) !important; color: var(--primary-glow) !important; background: rgba(0, 210, 255, 0.05) !important; }
+        
         .skeleton { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(90deg, transparent, rgba(0,210,255,0.1), transparent); background-size: 200% 100%; animation: loading 1.5s infinite; }
         @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
     </style>
@@ -109,14 +108,14 @@
 
 <div id="app">
     <div id="layer0" class="layer active" style="opacity:1; transform:translateY(0);">
-        <header><h1>健康調查</h1></header>
-        <p style="text-align:center; margin-bottom:4vh; font-size:2.5vh; color:var(--primary-glow);">您最關心的照護問題是？</p>
+        <header><h1>安美得秘笈第一章</h1></header>
+        <p style="text-align:center; margin-bottom:4vh; font-size:2.5vh; color:var(--primary-glow);">請問當傷口需要縫合時，你會選擇哪一個招式？</p>
         <div class="square-grid">
-            <button class="square-btn survey-btn" onclick="submitChoice('A')">傷口癒合速度</button>
-            <button class="square-btn survey-btn" onclick="submitChoice('B')">疤痕美化預防</button>
-            <button class="square-btn survey-btn" onclick="submitChoice('C')">術後日常護理</button>
+            <button class="square-btn survey-btn" onclick="submitChoice('A')">XXXX招</button>
+            <button class="square-btn survey-btn" onclick="submitChoice('B')">OOOO招</button>
+            <button class="square-btn survey-btn" onclick="submitChoice('C')">ZZZZ招</button>
         </div>
-        <p id="loading-msg" style="margin-top:2vh; color:#ff8c00; display:none;">正在傳送統計資料...</p>
+        <p id="loading-msg" style="margin-top:2vh; color:#ff8c00; display:none; text-align:center;">正在記錄選擇並進入系統...</p>
     </div>
 
     <div id="layer1" class="layer">
@@ -126,6 +125,7 @@
             <button class="square-btn" onclick="goLayer(2, 'medicine')">藥 品</button>
             <button class="square-btn" onclick="goLayer(2, 'device')">醫 材</button>
         </div>
+        <button class="back-btn" onclick="goLayer(0)">◀ 返回問卷</button>
     </div>
 
     <div id="layer2" class="layer">
@@ -143,23 +143,23 @@
             </div>
             <div id="detail-text" class="detail-text"></div>
         </div>
-        <button class="back-btn home-btn" onclick="goLayer(1)"> ⟲ 返回首頁</button>
+        <button class="back-btn home-btn" onclick="goLayer(0)"> ⟲ 返回首頁</button>
     </div>
 </div>
 
 <script>
-    // 請將下方的網址替換成你部署後的 Google Script URL
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCwT-GMJffn8EN79IfBfeQPCZDNtQi2vehgVgb6YGHnUi2C_nmX3rdHftTtSZD8qYA3g/exec";
+    // ⚠️ 這裡請填入您「新部署」後的網址
+    const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL";
 
     const data = {
         dressing: {
             title: "敷料系列",
             items: [
-                { name: "葡聚醣的秘密", img: "https://Amed-TSA.github.io/Amed/A1.png", info: "【赫麗敷 安緹淨 抗菌傷口修護液】醫療專用敷料|液態噴霧式敷料|主動式敷料|活性成分，濕潤傷口幫助癒合，適用於各種不規則形狀、大小、或無法使用黏貼型敷料的傷口照護" },
-                { name: "術後傷口好夥伴", img: "https://Amed-TSA.github.io/Amed/A2.png", info: "【赫麗敷 水凝膠手術傷口敷料】防水透氣 | 方便使用 |舒適服貼 獨家三層複合式結構內層A+高分子水凝膠，滲液吸收能力佳，維持傷口濕潤均衡狀態，加速傷口癒合。多款尺寸，符合手術傷口類別" },
-                { name: "還我好肌膚", img: "https://Amed-TSA.github.io/Amed/A3.png", info: "【赫麗敷 疤痕貼片】親膚性佳、低過敏、不易刺激皮膚的醫療級感壓膠敷料。針對縱向疤痕單向伸展設計，可使關節部位保有正常的伸展活動；同時橫向非彈性設計能有效固定疤痕壓制疤痕增生，並幫助新生組織恢復平整，預防疤痕產生。" },
-                { name: "赫麗敷保護你的咖投呼", img: "https://Amed-TSA.github.io/Amed/A4.png", info: "【赫麗敷 高滲液手術傷口敷料】有效吸收傷口滲出血液及組織液，A+高分子水膠使傷口床維持在濕潤均衡狀態；具有親膚矽膠膜(矽感壓膠)，可避免移除敷料時周圍皮膚損傷。柔軟性佳具延展性，關節部位使用能完整服貼，特別適用於關節術後恢復。" },
-                { name: "惱人痔瘡別再來", img: "https://Amed-TSA.github.io/Amed/A5.png", info: "【西海 痔瘡傷口保護敷料】幫助肛裂、痔瘡、產後痔瘡患者，用的安全、坐的舒適，形成保護膜、有效幫助傷口癒合" }
+                { name: "葡聚醣的秘密", img: "https://Amed-TSA.github.io/Amed/A1.png", info: "【赫麗敷 安緹淨 抗菌傷口修護液】..." },
+                { name: "術後傷口好夥伴", img: "https://Amed-TSA.github.io/Amed/A2.png", info: "【赫麗敷 水凝膠手術傷口敷料】..." },
+                { name: "還我好肌膚", img: "https://Amed-TSA.github.io/Amed/A3.png", info: "【赫麗敷 疤痕貼片】..." },
+                { name: "赫麗敷保護你的咖投呼", img: "https://Amed-TSA.github.io/Amed/A4.png", info: "【赫麗敷 高滲液手術傷口敷料】..." },
+                { name: "惱人痔瘡別再來", img: "https://Amed-TSA.github.io/Amed/A5.png", info: "【西海 痔瘡傷口保護敷料】..." }
             ]
         },
         medicine: { title: "藥品系列", items: [{ name: "藥品 1", img: "", info: "相關藥品說明預留位。" }] },
@@ -167,21 +167,23 @@
     };
 
     function submitChoice(choice) {
-        document.getElementById('loading-msg').style.display = 'block';
+        const msg = document.getElementById('loading-msg');
+        msg.style.display = 'block';
         
-        // 使用 JSONP 方式跨網域傳送給 Google Sheets，避免跨網域錯誤 (CORS)
-        const finalUrl = GOOGLE_SCRIPT_URL + "?choice=" + choice;
+        // 增加時間戳記防止快取
+        const finalUrl = GOOGLE_SCRIPT_URL + "?choice=" + choice + "&t=" + new Date().getTime();
         
         fetch(finalUrl, { mode: 'no-cors' })
         .then(() => {
-            console.log("資料已送出");
+            console.log("資料已發送");
             setTimeout(() => {
-                goLayer(1); // 送出後進入主畫面
+                msg.style.display = 'none';
+                goLayer(1); 
             }, 500);
         })
         .catch(err => {
-            console.error("傳送失敗", err);
-            goLayer(1); // 就算失敗也進入主畫面，不卡住使用者
+            console.error("發送失敗", err);
+            goLayer(1); 
         });
     }
 
@@ -227,8 +229,6 @@
         } else { wrapper.style.display = 'none'; }
         document.querySelector('.content-box').scrollTop = 0;
     }
-
-    document.addEventListener('click', e => { if (e.target.tagName === 'BUTTON') setTimeout(() => e.target.blur(), 100); }, true);
 </script>
 
 </body>
