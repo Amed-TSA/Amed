@@ -127,11 +127,11 @@
             <button class="grid-btn" onclick="submitGrid('D')">乳外</button>
             <button class="grid-btn" onclick="submitGrid('E')">泌尿外</button>
             <button class="grid-btn" onclick="submitGrid('F')">心外</button>
-            <button class="grid-btn" onclick="submitGrid('G')">神外 G</button>
+            <button class="grid-btn" onclick="submitGrid('G')">神外</button>
             <button class="grid-btn" onclick="submitGrid('H')">消化外</button>
             <button class="grid-btn" onclick="submitGrid('I')">其他門派</button>
         </div>
-        <p id="grid-loading" style="margin-top:1vh; color:#ff8c00; display:none; text-align:center;">正在跳轉至問卷...</p>
+        <p id="grid-loading" style="margin-top:1vh; color:#ff8c00; display:none; text-align:center;">正在記錄...</p>
     </div>
 
     <div id="layer0" class="layer">
@@ -142,7 +142,7 @@
             <button class="square-btn survey-btn" onclick="submitChoice('B')">zipline式</button>
             <button class="square-btn survey-btn" onclick="submitChoice('C')">組織膠式</button>
         </div>
-        <p id="survey-loading" style="margin-top:2vh; color:#ff8c00; display:none; text-align:center;">正在記錄選擇並進入系統...</p>
+        <p id="survey-loading" style="margin-top:2vh; color:#ff8c00; display:none; text-align:center;">正在記錄...</p>
         <button class="back-btn" onclick="goLayer('_grid')">◀ 返回九宮格</button>
     </div>
 
@@ -176,45 +176,39 @@
 </div>
 
 <script>
-    // ⚠️ 請分別填入這兩個試算表對應的部署網址
+    // ⚠️ 試算表部署網址
     const URL_DEPT_STAT = "https://script.google.com/macros/s/AKfycbxBe9tzxz0YnK8eaXhLvmUHz4lAelmgTIGaMj7qMcjH_VkTrUYAa23UKl6a3X-S7fJv/exec"; 
     const URL_SKILL_STAT = "https://script.google.com/macros/s/AKfycbyzO02B_f7NMLW55qWUHqu69_Tq5n2Zubq6kNopnnEsDPJ8-Q0fxqzbXrKCJ_rvp4PiEw/exec";
 
-    // 第一頁邏輯：九宮格點擊 (傳送到試算表 A)
+    // 第一頁傳送邏輯 (傳至試算表 A)
     function submitGrid(choice) {
         const msg = document.getElementById('grid-loading');
-        msg.style.display = 'block';
-        
-        // 使用 URL_DEPT_STAT
+        if(msg) msg.style.display = 'block';
         const finalUrl = URL_DEPT_STAT + "?choice=" + choice + "&t=" + new Date().getTime();
         
-        fetch(finalUrl, { mode: 'no-cors' })
-        .then(() => {
-            setTimeout(() => {
-                msg.style.display = 'none';
-                goLayer(0); // 去問卷頁面
-            }, 300);
-        })
-        .catch(() => goLayer(0));
+        fetch(finalUrl, { mode: 'no-cors' }); // 發送但不等待回傳
+        
+        setTimeout(() => {
+            if(msg) msg.style.display = 'none';
+            goLayer(0); // 立即跳下一頁
+        }, 150);
     }
 
-    // 第二頁邏輯：問卷點擊 (傳送到試算表 B)
+    // 第二頁傳送邏輯 (傳至試算表 B)
     function submitChoice(choice) {
         const msg = document.getElementById('survey-loading');
-        msg.style.display = 'block';
-        
-        // 使用 URL_SKILL_STAT
+        if(msg) msg.style.display = 'block';
         const finalUrl = URL_SKILL_STAT + "?choice=" + choice + "&t=" + new Date().getTime();
         
-        fetch(finalUrl, { mode: 'no-cors' })
-        .then(() => {
-            setTimeout(() => {
-                msg.style.display = 'none';
-                goLayer(1); // 去 A+med 主類別
-            }, 500);
-        })
-        .catch(() => goLayer(1));
+        fetch(finalUrl, { mode: 'no-cors' }); // 發送但不等待回傳
+        
+        setTimeout(() => {
+            if(msg) msg.style.display = 'none';
+            goLayer(1); // 立即跳下一頁
+        }, 150);
     }
+
+    // 產品資料定義
     const data = {
         dressing: {
             title: "敷料系列",
@@ -243,46 +237,17 @@
             ] }
     };
 
-    // 第一頁邏輯：九宮格點擊 (記錄後去問卷)
-    function submitGrid(choice) {
-        const msg = document.getElementById('grid-loading');
-        msg.style.display = 'block';
-        const finalUrl = GOOGLE_SCRIPT_URL + "?choice=" + choice + "&t=" + new Date().getTime();
-        
-        fetch(finalUrl, { mode: 'no-cors' })
-        .then(() => {
-            setTimeout(() => {
-                msg.style.display = 'none';
-                goLayer(0); // 去問卷頁面
-            }, 300);
-        })
-        .catch(() => goLayer(0));
-    }
-
-    // 第二頁邏輯：問卷點擊 (記錄後去主選單)
-    function submitChoice(choice) {
-        const msg = document.getElementById('survey-loading');
-        msg.style.display = 'block';
-        const finalUrl = GOOGLE_SCRIPT_URL + "?choice=" + choice + "&t=" + new Date().getTime();
-        
-        fetch(finalUrl, { mode: 'no-cors' })
-        .then(() => {
-            setTimeout(() => {
-                msg.style.display = 'none';
-                goLayer(1); // 去 A+med 主類別
-            }, 500);
-        })
-        .catch(() => goLayer(1));
-    }
-
+    // 換頁邏輯
     function goLayer(layerNum, category = '') {
         const layers = document.querySelectorAll('.layer');
         layers.forEach(l => { l.classList.remove('active'); l.style.opacity = '0'; });
 
         setTimeout(() => {
             const target = (typeof layerNum === 'string') ? document.getElementById('layer' + layerNum) : document.getElementById('layer' + layerNum);
-            target.classList.add('active');
-            setTimeout(() => target.style.opacity = '1', 50);
+            if(target) {
+                target.classList.add('active');
+                setTimeout(() => target.style.opacity = '1', 50);
+            }
 
             if (layerNum === 2 && category) {
                 const categoryData = data[category];
@@ -300,6 +265,7 @@
         }, 300);
     }
 
+    // 詳情顯示邏輯
     function showDetail(title, info, imgSrc) {
         goLayer(3);
         document.getElementById('detail-title').innerText = title;
