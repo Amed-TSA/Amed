@@ -23,7 +23,6 @@
             position: relative;
         }
 
-        /* 背景特效層 */
         body::before {
             content: "";
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -47,7 +46,6 @@
         }
         @keyframes rotateBg { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* 層級與動畫 */
         .layer { 
             display: none; width: 100%; height: 100%; 
             opacity: 0; transform: translateY(10px);
@@ -63,16 +61,29 @@
             text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
         }
 
-        /* 按鈕樣式 (還原原始比例) */
         .square-grid { width: 100%; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2vh; }
-        .square-btn {
-            width: 20vh; aspect-ratio: 1 / 1; background: var(--btn-bg);
+        
+        .nine-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 15px;
+            width: 90%;
+            flex-grow: 1;
+            margin: 2vh 0;
+        }
+
+        .square-btn, .grid-btn {
+            background: var(--btn-bg);
             border: 2px solid var(--btn-border); border-radius: 25px;
-            color: #fff; font-size: 4.5vh; font-weight: bold; cursor: pointer;
+            color: #fff; font-weight: bold; cursor: pointer;
             display: flex; align-items: center; justify-content: center; transition: 0.3s;
             backdrop-filter: blur(5px);
         }
-        .square-btn:active { transform: scale(0.96); border-color: #ff8c00; background: rgba(255, 140, 0, 0.3); }
+        .square-btn { width: 20vh; aspect-ratio: 1 / 1; font-size: 4.5vh; }
+        .grid-btn { border-radius: 15px; font-size: 2.5vh; width: 100%; height: 100%; }
+        
+        .square-btn:active, .grid-btn:active { transform: scale(0.96); border-color: #ff8c00; background: rgba(255, 140, 0, 0.3); }
 
         .survey-btn { width: 85%; height: 10vh; aspect-ratio: auto; font-size: 3vh; border-radius: 15px; }
 
@@ -106,7 +117,24 @@
 </div>
 
 <div id="app">
-    <div id="layer0" class="layer active" style="opacity:1; transform:translateY(0);">
+    <div id="layer_grid" class="layer active" style="opacity:1; transform:translateY(0);">
+        <header><h1>安美得武林帖</h1></header>
+        <p style="text-align:center; font-size:2.5vh; color:var(--primary-glow); margin-bottom:1vh;">大外科內高手雲集，門派眾多，在開始前，請先告訴我閣下屬於哪一門派</p>
+        <div class="nine-grid">
+            <button class="grid-btn" onclick="submitGrid('A')">骨科</button>
+            <button class="grid-btn" onclick="submitGrid('B')">胸外</button>
+            <button class="grid-btn" onclick="submitGrid('C')">整外</button>
+            <button class="grid-btn" onclick="submitGrid('D')">乳外</button>
+            <button class="grid-btn" onclick="submitGrid('E')">泌尿外</button>
+            <button class="grid-btn" onclick="submitGrid('F')">心外</button>
+            <button class="grid-btn" onclick="submitGrid('G')">神外 G</button>
+            <button class="grid-btn" onclick="submitGrid('H')">消化外</button>
+            <button class="grid-btn" onclick="submitGrid('I')">其他門派</button>
+        </div>
+        <p id="grid-loading" style="margin-top:1vh; color:#ff8c00; display:none; text-align:center;">正在跳轉至問卷...</p>
+    </div>
+
+    <div id="layer0" class="layer">
         <header><h1>安美得秘笈第一章</h1></header>
         <p style="text-align:center; margin-bottom:4vh; font-size:4vh; font-weight:bold; color:#ffffff; text-shadow: 0 0 10px rgba(0,210,255,0.8);">請問當傷口需要縫合時，你會選擇哪一個招式？</p>
         <div class="square-grid">
@@ -114,7 +142,8 @@
             <button class="square-btn survey-btn" onclick="submitChoice('B')">zipline式</button>
             <button class="square-btn survey-btn" onclick="submitChoice('C')">組織膠式</button>
         </div>
-        <p id="loading-msg" style="margin-top:2vh; color:#ff8c00; display:none; text-align:center;">正在記錄選擇並進入系統...</p>
+        <p id="survey-loading" style="margin-top:2vh; color:#ff8c00; display:none; text-align:center;">正在記錄選擇並進入系統...</p>
+        <button class="back-btn" onclick="goLayer('_grid')">◀ 返回九宮格</button>
     </div>
 
     <div id="layer1" class="layer">
@@ -142,53 +171,108 @@
             </div>
             <div id="detail-text" class="detail-text"></div>
         </div>
-        <button class="back-btn home-btn" onclick="goLayer(0)"> ⟲ 返回首頁</button>
+        <button class="back-btn home-btn" onclick="goLayer('_grid')"> ⟲ 返回首頁</button>
     </div>
 </div>
 
 <script>
-    // ⚠️ 這裡請填入您「新部署」後的網址
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzO02B_f7NMLW55qWUHqu69_Tq5n2Zubq6kNopnnEsDPJ8-Q0fxqzbXrKCJ_rvp4PiEw/exec";
+    // ⚠️ 請分別填入這兩個試算表對應的部署網址
+    const URL_DEPT_STAT = "https://script.google.com/macros/s/AKfycbyJyDbglVLWniDNWle76Bsdx24a50lLkGS3L8ATY7E/dev"; 
+    const URL_SKILL_STAT = "https://script.google.com/macros/s/AKfycbxUY57VL-XN-1kFWYRr7b-7CsgXw5g5OL0hoomM6qoX/dev";
 
+    // 第一頁邏輯：九宮格點擊 (傳送到試算表 A)
+    function submitGrid(choice) {
+        const msg = document.getElementById('grid-loading');
+        msg.style.display = 'block';
+        
+        // 使用 URL_DEPT_STAT
+        const finalUrl = URL_DEPT_STAT + "?choice=" + choice + "&t=" + new Date().getTime();
+        
+        fetch(finalUrl, { mode: 'no-cors' })
+        .then(() => {
+            setTimeout(() => {
+                msg.style.display = 'none';
+                goLayer(0); // 去問卷頁面
+            }, 300);
+        })
+        .catch(() => goLayer(0));
+    }
+
+    // 第二頁邏輯：問卷點擊 (傳送到試算表 B)
+    function submitChoice(choice) {
+        const msg = document.getElementById('survey-loading');
+        msg.style.display = 'block';
+        
+        // 使用 URL_SKILL_STAT
+        const finalUrl = URL_SKILL_STAT + "?choice=" + choice + "&t=" + new Date().getTime();
+        
+        fetch(finalUrl, { mode: 'no-cors' })
+        .then(() => {
+            setTimeout(() => {
+                msg.style.display = 'none';
+                goLayer(1); // 去 A+med 主類別
+            }, 500);
+        })
+        .catch(() => goLayer(1));
+    }
     const data = {
         dressing: {
             title: "敷料系列",
             items: [
-                { name: "葡聚醣的秘密", img: "https://Amed-TSA.github.io/Amed/A1.png", info: "【赫麗敷 安緹淨 抗菌傷口修護液】【赫麗敷 安緹淨 抗菌傷口修護液】醫療專用敷料|液態噴霧式敷料|主動式敷料|活性成分，濕潤傷口幫助癒合，適用於各種不規則形狀、大小、或無法使用黏貼型敷料的傷口照護" },
-                { name: "術後傷口好夥伴", img: "https://Amed-TSA.github.io/Amed/A2.png", info: "【赫麗敷 水凝膠手術傷口敷料】防水透氣 | 方便使用 |舒適服貼 獨家三層複合式結構內層A+高分子水凝膠，滲液吸收能力佳，維持傷口濕潤均衡狀態，加速傷口癒合。多款尺寸，符合手術傷口類別" },
-                { name: "還我好肌膚", img: "https://Amed-TSA.github.io/Amed/A3.png", info: "【赫麗敷 疤痕貼片】親膚性佳、低過敏、不易刺激皮膚的醫療級感壓膠敷料。針對縱向疤痕單向伸展設計，可使關節部位保有正常的伸展活動；同時橫向非彈性設計能有效固定疤痕壓制疤痕增生，並幫助新生組織恢復平整，預防疤痕產生。" },
-                { name: "赫麗敷保護你的咖投呼", img: "https://Amed-TSA.github.io/Amed/A4.png", info: "【赫麗敷 高滲液手術傷口敷料】有效吸收傷口滲出血液及組織液，A+高分子水膠使傷口床維持在濕潤均衡狀態；具有親膚矽膠膜(矽感壓膠)，可避免移除敷料時周圍皮膚損傷。柔軟性佳具延展性，關節部位使用能完整服貼，特別適用於關節術後恢復。" },
-                { name: "惱人痔瘡別再來", img: "https://Amed-TSA.github.io/Amed/A5.png", info: "【西海 痔瘡傷口保護敷料】幫助肛裂、痔瘡、產後痔瘡患者，用的安全、坐的舒適，形成保護膜、有效幫助傷口癒合" }
+                { name: "葡聚醣的秘密", img: "https://Amed-TSA.github.io/Amed/A1.png", info: "【赫麗敷 安緹淨 抗菌傷口修護液】<br>醫療專用敷料|液態噴霧式敷料|主動式敷料|活性成分，濕潤傷口幫助癒合，適用於各種不規則形狀、大小、或無法使用黏貼型敷料的傷口照護" },
+                { name: "術後傷口好夥伴", img: "https://Amed-TSA.github.io/Amed/A2.png", info: "【赫麗敷 水凝膠手術傷口敷料】<br>防水透氣 | 方便使用 |舒適服貼<br> 獨家三層複合式結構內層A+高分子水凝膠，滲液吸收能力佳，維持傷口濕潤均衡狀態，加速傷口癒合。多款尺寸，符合手術傷口類別" },
+                { name: "還我好肌膚", img: "https://Amed-TSA.github.io/Amed/A3.png", info: "【赫麗敷 疤痕貼片】<br>親膚性佳、低過敏、不易刺激皮膚的醫療級感壓膠敷料。針對縱向疤痕單向伸展設計，可使關節部位保有正常的伸展活動；同時橫向非彈性設計能有效固定疤痕壓制疤痕增生，並幫助新生組織恢復平整，預防疤痕產生。" },
+                { name: "赫麗敷保護你的咖投呼", img: "https://Amed-TSA.github.io/Amed/A4.png", info: "【赫麗敷 高滲液手術傷口敷料】<br>有效吸收傷口滲出血液及組織液，A+高分子水膠使傷口床維持在濕潤均衡狀態；具有親膚矽膠膜(矽感壓膠)，可避免移除敷料時周圍皮膚損傷。柔軟性佳具延展性，關節部位使用能完整服貼，特別適用於關節術後恢復。" },
+                { name: "惱人痔瘡別再來", img: "https://Amed-TSA.github.io/Amed/A5.png", info: "【西海 痔瘡傷口保護敷料】<br>幫助肛裂、痔瘡、產後痔瘡患者，用的安全、坐の舒適，形成保護膜、有效幫助傷口癒合" }
             ]
         },
-        medicine: { title: "藥品系列", items: [{ name: "藥品 1", img: "", info: "相關藥品說明預留位。" }] },
+        medicine: { title: "藥品系列", 
+            items: [
+                { name: "雙效止痛 一針到位", img: "https://Amed-TSA.github.io/Amed/納疼解.png", info: "Combogesic專利比例結合Acetaminophen 1000mg 與 Ibuprofen 300mg，同時阻斷中樞與周邊痛覺，發揮 1+1>2 的多模式止痛優勢。<br>靜脈輸注15 分鐘快速起效，提供單方2倍的止痛強度，為術後疼痛建立最強的第一道防線。" },
+                { name: "多模式止痛黃金組合", img: "https://Amed-TSA.github.io/Amed/納疼解.png", info: "美國術後疼痛管理指引強烈建議：<br>只要沒有禁忌症，Acetaminophen + NSAIDs 應作為術後多模式止痛組合的基礎。<br>透過雙機轉協同止痛，能顯著提升止痛品質，減少鴉片類藥物使用量與副作用，實現更安全、更高效的疼痛管理策略。" },
+                { name: "一針7天長效止痛", img: "https://Amed-TSA.github.io/Amed/納疼解.png", info: "告別頻繁給藥的困擾！Naldebain採用獨特緩釋劑型，單次注射即可維持 7 天穩定血中濃度。作為「背景止痛」，它能持續壓制疼痛，並與其他短效藥物完美搭配，確保病患在整個術後關鍵週都能處於舒適的狀態。" },
+                { name: "無管線束縛加速復原", img: "https://Amed-TSA.github.io/Amed/納疼解.png", info: "Naldebain是「帶著走的止痛保護」卻沒有傳統PCA的管路與機器負擔。<br>它讓病患術後能輕鬆下床活動、加速復健進度。藥效更能無縫銜接至出院後，填補居家照護常見的止痛缺口，讓高品質的疼痛管理從醫院延伸至家中。" },
+                { name: "術後快速精準逆轉", img: "https://Amed-TSA.github.io/Amed/安速加.png", info: "Ansumma通過經濟部研發計畫，是首張國產Sugammadex。<br>單次注射即可快速完全逆轉神經肌肉阻斷，大幅降低殘餘肌鬆風險，確保病患在術後關鍵時刻都能安全、順利地甦醒。" }
+            ] 
+        },
         device: { title: "醫材系列", 
             items: [
                 { name: "POLYSITE ECHO Implantable Port", 
-                 img: "https://Amed-TSA.github.io/Amed/POLYSITE.png", 
-                 info: "POLYSITE ECHO Implantable Port: Key Priorities for Clinicians in Procedure and Patient Management<br>A. Hybrid Titanium & POM lightweight design<br>B. ECHO set for ultrasound-guided venipuncture<br>C. CT/MRI contrast media injection compatibility<br>D. Silicone or Polyurethane catheter options。" }
+                  img: "https://Amed-TSA.github.io/Amed/POLYSITE.png", 
+                  info: "POLYSITE ECHO Implantable Port: Key Priorities for Clinicians in Procedure and Patient Management<br>A. Hybrid Titanium & POM lightweight design<br>B. ECHO set for ultrasound-guided venipuncture<br>C. CT/MRI contrast media injection compatibility<br>D. Silicone or Polyurethane catheter options。" }
             ] }
     };
 
-    function submitChoice(choice) {
-        const msg = document.getElementById('loading-msg');
+    // 第一頁邏輯：九宮格點擊 (記錄後去問卷)
+    function submitGrid(choice) {
+        const msg = document.getElementById('grid-loading');
         msg.style.display = 'block';
-        
-        // 增加時間戳記防止快取
         const finalUrl = GOOGLE_SCRIPT_URL + "?choice=" + choice + "&t=" + new Date().getTime();
         
         fetch(finalUrl, { mode: 'no-cors' })
         .then(() => {
-            console.log("資料已發送");
             setTimeout(() => {
                 msg.style.display = 'none';
-                goLayer(1); 
+                goLayer(0); // 去問卷頁面
+            }, 300);
+        })
+        .catch(() => goLayer(0));
+    }
+
+    // 第二頁邏輯：問卷點擊 (記錄後去主選單)
+    function submitChoice(choice) {
+        const msg = document.getElementById('survey-loading');
+        msg.style.display = 'block';
+        const finalUrl = GOOGLE_SCRIPT_URL + "?choice=" + choice + "&t=" + new Date().getTime();
+        
+        fetch(finalUrl, { mode: 'no-cors' })
+        .then(() => {
+            setTimeout(() => {
+                msg.style.display = 'none';
+                goLayer(1); // 去 A+med 主類別
             }, 500);
         })
-        .catch(err => {
-            console.error("發送失敗", err);
-            goLayer(1); 
-        });
+        .catch(() => goLayer(1));
     }
 
     function goLayer(layerNum, category = '') {
@@ -196,7 +280,7 @@
         layers.forEach(l => { l.classList.remove('active'); l.style.opacity = '0'; });
 
         setTimeout(() => {
-            const target = document.getElementById('layer' + layerNum);
+            const target = (typeof layerNum === 'string') ? document.getElementById('layer' + layerNum) : document.getElementById('layer' + layerNum);
             target.classList.add('active');
             setTimeout(() => target.style.opacity = '1', 50);
 
