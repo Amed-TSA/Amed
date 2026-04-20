@@ -94,7 +94,7 @@
         }
 
         .content-box {
-            width: 100%; height: 60vh; background: rgba(255, 255, 255, 0.05);
+            width: 100%; height: 55vh; background: rgba(255, 255, 255, 0.05);
             border-radius: 20px; padding: 3vh; border: 1px solid rgba(255, 255, 255, 0.1);
             overflow-y: auto; backdrop-filter: blur(10px);
         }
@@ -102,9 +102,31 @@
         .detail-image { width: 100%; max-height: 28vh; object-fit: contain; opacity: 0; transition: opacity 0.5s; }
         .detail-text { font-size: 2.6vh; line-height: 1.6; color: #ddd; }
         
-        .back-btn { margin-top: auto; margin-bottom: 3vh; width: 50%; height: 7vh; background: #111; border: 1px solid #444; border-radius: 40px; color: #aaa; font-size: 2.2vh; cursor: pointer; }
+        /* 雙按鈕容器樣式 */
+        .btn-group {
+            margin-top: auto;
+            margin-bottom: 3vh;
+            display: flex;
+            gap: 15px;
+            width: 95%;
+            justify-content: center;
+        }
+        .back-btn, .home-btn { 
+            height: 7vh; 
+            border-radius: 40px; 
+            font-size: 2.2vh; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        .back-btn { background: #111; border: 1px solid #444; color: #aaa; }
         .home-btn { border: 1px solid var(--primary-glow) !important; color: var(--primary-glow) !important; background: rgba(0, 210, 255, 0.05) !important; }
-        
+        .home-btn:active { background: var(--primary-glow) !important; color: #000 !important; }
+
         .skeleton { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(90deg, transparent, rgba(0,210,255,0.1), transparent); background-size: 200% 100%; animation: loading 1.5s infinite; }
         @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
     </style>
@@ -143,7 +165,7 @@
             <button class="square-btn survey-btn" onclick="submitChoice('C')">組織膠式</button>
         </div>
         <p id="survey-loading" style="margin-top:2vh; color:#ff8c00; display:none; text-align:center;">正在記錄...</p>
-        <button class="back-btn" onclick="goLayer('_grid')">◀ 返回九宮格</button>
+        <button class="back-btn" style="margin-top:auto; margin-bottom:3vh; width:50%; flex:none;" onclick="goLayer('_grid')">◀ 返回九宮格</button>
     </div>
 
     <div id="layer1" class="layer">
@@ -153,13 +175,17 @@
             <button class="square-btn" onclick="goLayer(2, 'medicine')">藥 品</button>
             <button class="square-btn" onclick="goLayer(2, 'device')">醫 材</button>
         </div>
-        <button class="back-btn" onclick="goLayer(0)">◀ 返回問卷</button>
+        <button class="back-btn" style="margin-top:auto; margin-bottom:3vh; width:50%; flex:none;" onclick="goLayer(0)">◀ 返回問卷</button>
     </div>
 
     <div id="layer2" class="layer">
         <h1 id="category-title" style="font-size: 5vh; margin: 3vh 0; color: var(--primary-glow);"></h1>
         <div id="sub-menu-container" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
-        <button class="back-btn" onclick="goLayer(1)">◀ 返回主選單</button>
+        
+        <div class="btn-group">
+            <button class="back-btn" onclick="goLayer(1)">◀ 上一頁</button>
+            <button class="home-btn" onclick="goLayer('_grid')">⟲ 回首頁</button>
+        </div>
     </div>
 
     <div id="layer3" class="layer">
@@ -171,44 +197,41 @@
             </div>
             <div id="detail-text" class="detail-text"></div>
         </div>
-        <button class="back-btn home-btn" onclick="goLayer('_grid')"> ⟲ 返回首頁</button>
+
+        <div class="btn-group">
+            <button class="back-btn" id="detail-back-btn">◀ 上一頁</button>
+            <button class="home-btn" onclick="goLayer('_grid')">⟲ 回首頁</button>
+        </div>
     </div>
 </div>
 
 <script>
-    // ⚠️ 試算表部署網址
     const URL_DEPT_STAT = "https://script.google.com/macros/s/AKfycbxBe9tzxz0YnK8eaXhLvmUHz4lAelmgTIGaMj7qMcjH_VkTrUYAa23UKl6a3X-S7fJv/exec"; 
     const URL_SKILL_STAT = "https://script.google.com/macros/s/AKfycbyzO02B_f7NMLW55qWUHqu69_Tq5n2Zubq6kNopnnEsDPJ8-Q0fxqzbXrKCJ_rvp4PiEw/exec";
 
-    // 第一頁傳送邏輯 (傳至試算表 A)
+    // 全域變數，紀錄當前所在的分類，以便詳情頁返回
+    let currentCategory = '';
+
     function submitGrid(choice) {
         const msg = document.getElementById('grid-loading');
         if(msg) msg.style.display = 'block';
-        const finalUrl = URL_DEPT_STAT + "?choice=" + choice + "&t=" + new Date().getTime();
-        
-        fetch(finalUrl, { mode: 'no-cors' }); // 發送但不等待回傳
-        
+        fetch(URL_DEPT_STAT + "?choice=" + choice + "&t=" + new Date().getTime(), { mode: 'no-cors' });
         setTimeout(() => {
             if(msg) msg.style.display = 'none';
-            goLayer(0); // 立即跳下一頁
+            goLayer(0);
         }, 150);
     }
 
-    // 第二頁傳送邏輯 (傳至試算表 B)
     function submitChoice(choice) {
         const msg = document.getElementById('survey-loading');
         if(msg) msg.style.display = 'block';
-        const finalUrl = URL_SKILL_STAT + "?choice=" + choice + "&t=" + new Date().getTime();
-        
-        fetch(finalUrl, { mode: 'no-cors' }); // 發送但不等待回傳
-        
+        fetch(URL_SKILL_STAT + "?choice=" + choice + "&t=" + new Date().getTime(), { mode: 'no-cors' });
         setTimeout(() => {
             if(msg) msg.style.display = 'none';
-            goLayer(1); // 立即跳下一頁
+            goLayer(1);
         }, 150);
     }
 
-    // 產品資料定義
     const data = {
         dressing: {
             title: "敷料系列",
@@ -226,7 +249,7 @@
                 { name: "多模式止痛黃金組合", img: "https://Amed-TSA.github.io/Amed/納疼解.png", info: "美國術後疼痛管理指引強烈建議：<br>只要沒有禁忌症，Acetaminophen + NSAIDs 應作為術後多模式止痛組合的基礎。<br>透過雙機轉協同止痛，能顯著提升止痛品質，減少鴉片類藥物使用量與副作用，實現更安全、更高效的疼痛管理策略。" },
                 { name: "一針7天長效止痛", img: "https://Amed-TSA.github.io/Amed/納疼解.png", info: "告別頻繁給藥的困擾！Naldebain採用獨特緩釋劑型，單次注射即可維持 7 天穩定血中濃度。作為「背景止痛」，它能持續壓制疼痛，並與其他短效藥物完美搭配，確保病患在整個術後關鍵週都能處於舒適的狀態。" },
                 { name: "無管線束縛加速復原", img: "https://Amed-TSA.github.io/Amed/納疼解.png", info: "Naldebain是「帶著走的止痛保護」卻沒有傳統PCA的管路與機器負擔。<br>它讓病患術後能輕鬆下床活動、加速復健進度。藥效更能無縫銜接至出院後，填補居家照護常見的止痛缺口，讓高品質的疼痛管理從醫院延伸至家中。" },
-                { name: "術後快速精準逆轉", img: "https://Amed-TSA.github.io/Amed/安速加.png", info: "Ansumma通過經濟部研發計畫，是首張國產Sugammadex。<br>單次注射即可快速完全逆轉神經肌肉阻斷，大幅降低殘餘肌鬆風險，確保病患在術後關鍵時刻都能安全、順利地甦醒。" }
+                { name: "術後快速精轉逆轉", img: "https://Amed-TSA.github.io/Amed/安速加.png", info: "Ansumma通過經濟部研發計畫，是首張國產Sugammadex。<br>單次注射即可快速完全逆轉神經肌肉阻斷，大幅降低殘餘肌鬆風險，確保病患在術後關鍵時刻都能安全、順利地甦醒。" }
             ] 
         },
         device: { title: "醫材系列", 
@@ -237,7 +260,6 @@
             ] }
     };
 
-    // 換頁邏輯
     function goLayer(layerNum, category = '') {
         const layers = document.querySelectorAll('.layer');
         layers.forEach(l => { l.classList.remove('active'); l.style.opacity = '0'; });
@@ -250,6 +272,7 @@
             }
 
             if (layerNum === 2 && category) {
+                currentCategory = category; // 紀錄當前分類
                 const categoryData = data[category];
                 document.getElementById('category-title').innerText = categoryData.title;
                 const container = document.getElementById('sub-menu-container');
@@ -265,11 +288,14 @@
         }, 300);
     }
 
-    // 詳情顯示邏輯
     function showDetail(title, info, imgSrc) {
         goLayer(3);
         document.getElementById('detail-title').innerText = title;
         document.getElementById('detail-text').innerHTML = info;
+        
+        // 設定詳情頁的「上一頁」按鈕點擊後的行為
+        document.getElementById('detail-back-btn').onclick = () => goLayer(2, currentCategory);
+
         const wrapper = document.getElementById('img-container');
         const imgTag = document.getElementById('detail-img');
         const skeleton = document.getElementById('skeleton');
