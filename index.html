@@ -170,10 +170,11 @@
 
     <div id="layer1" class="layer">
         <header><h1>A+med</h1></header>
+        <p style="text-align:center; margin-bottom:4vh; font-size:4vh; font-weight:bold; color:#ffffff; text-shadow: 0 0 10px rgba(0,210,255,0.8);">歡迎來到安美得秘笈，請問閣下想了解哪一章節</p>
         <div class="square-grid">
-            <button class="square-btn" onclick="goLayer(2, 'dressing')">敷 料</button>
-            <button class="square-btn" onclick="goLayer(2, 'medicine')">藥 品</button>
-            <button class="square-btn" onclick="goLayer(2, 'device')">醫 材</button>
+            <button class="square-btn" onclick="goLayer(2, 'dressing')">敷 料 章</button>
+            <button class="square-btn" onclick="goLayer(2, 'medicine')">藥 品 章</button>
+            <button class="square-btn" onclick="goLayer(2, 'device')">醫 材 章</button>
         </div>
         <button class="back-btn" style="margin-top:auto; margin-bottom:3vh; width:50%; flex:none;" onclick="goLayer(0)">◀ 返回問卷</button>
     </div>
@@ -254,9 +255,12 @@
         },
         device: { title: "醫材系列", 
             items: [
+                { name: "easyEndo Powered Stapler", 
+                 img: "https://Amed-TSA.github.io/Amed/電動吻合器.png", 
+                 info: "easyEndo Powered Stapler<br><b>Features</b><br>．電動鉗口開合、擊發與回刀<br>．60度四段大轉角<br>．提供Tri-Staple釘倉選項(褐/紫/黑)<br><b>Advantages</b><br>．減少晃動、省力<br>．提升操作便利性<br>．使血液供應更好<br><b>Benefits</b><br>．降低晃動造成組織損傷之風險<br>．減少因角度不足而須做額外調整<br>．降低選釘考量" },
                 { name: "POLYSITE ECHO Implantable Port", 
                   img: "https://Amed-TSA.github.io/Amed/POLYSITE.png", 
-                  info: "POLYSITE ECHO Implantable Port: Key Priorities for Clinicians in Procedure and Patient Management<br>A. Hybrid Titanium & POM lightweight design<br>B. ECHO set for ultrasound-guided venipuncture<br>C. CT/MRI contrast media injection compatibility<br>D. Silicone or Polyurethane catheter options。" }
+                  info: "<b>POLYSITE ECHO Implantable Port:</b> Key Priorities for Clinicians in Procedure and Patient Management<br>A. Hybrid Titanium & POM lightweight design<br>B. ECHO set for ultrasound-guided venipuncture<br>C. CT/MRI contrast media injection compatibility<br>D. Silicone or Polyurethane catheter options." }
             ] }
     };
 
