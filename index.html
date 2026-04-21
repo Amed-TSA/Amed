@@ -33,9 +33,8 @@
         .bg-elements { position: absolute; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         .glow-sphere {
             position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(0, 210, 255, 0.18) 0%, transparent 50%),
-                radial-gradient(circle at 70% 70%, rgba(112, 0, 255, 0.15) 0%, transparent 50%);
+            background: radial-gradient(circle at 30% 30%, rgba(0, 210, 255, 0.18) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(112, 0, 255, 0.15) 0%, transparent 50%);
             animation: rotateBg 25s infinite linear;
         }
         .hex-grid {
@@ -50,59 +49,68 @@
             display: none; width: 100%; height: 100%; 
             opacity: 0; transform: translateY(10px);
             transition: opacity 0.4s ease, transform 0.4s ease;
-            flex-direction: column; align-items: center; padding: 5vh 5vw;
+            flex-direction: column; align-items: center; padding: 4vh 5vw;
         }
         .layer.active { display: flex; opacity: 1; transform: translateY(0); }
 
         #app { width: 100%; max-width: 1080px; height: 100%; position: relative; z-index: 1; }
-        header { text-align: center; margin-top: 2vh; margin-bottom: 2vh; flex-shrink: 0; }
+        header { text-align: center; margin-bottom: 2vh; flex-shrink: 0; }
         header h1 {
-            font-size: min(5vh, 10vw); background: linear-gradient(to bottom, #fff, #00d2ff);
+            font-size: min(6vh, 12vw); background: linear-gradient(to bottom, #fff, #00d2ff);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
         }
 
+        /* 九宮格填滿優化 */
         .nine-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 12px;
+            gap: 15px;
             width: 100%;
-            max-width: 400px;
-            flex-grow: 0;
-            margin: 2vh 0;
+            max-width: 500px; /* 放寬寬度 */
+            margin: 1vh 0;
+            flex-grow: 1; /* 佔據剩餘空間 */
+            max-height: 55vh;
         }
 
         .grid-btn, .list-btn, .survey-btn {
             background: var(--btn-bg);
-            border: 1.5px solid var(--btn-border); border-radius: 12px;
+            border: 2px solid var(--btn-border); border-radius: 15px;
             color: #fff; font-weight: bold; cursor: pointer;
             display: flex; align-items: center; justify-content: center; transition: 0.3s;
             backdrop-filter: blur(5px);
         }
-        .grid-btn { aspect-ratio: 1 / 1; font-size: 2.2vh; }
-        .survey-btn { width: 100%; max-width: 350px; height: 8vh; margin-bottom: 2vh; font-size: 2.6vh; }
-        .list-btn { width: 100%; max-width: 350px; min-height: 7.5vh; font-size: 2.4vh; margin-bottom: 1.5vh; padding: 0 15px; }
+        .grid-btn { font-size: 2.6vh; width: 100%; height: 100%; }
+        
+        /* 調整長方形按鈕比例 */
+        .survey-btn, .list-btn { 
+            width: 90%; 
+            max-width: 450px; 
+            height: 9vh; /* 增加高度變成長方形 */
+            margin-bottom: 2.5vh; 
+            font-size: 3vh; 
+            border-radius: 18px;
+        }
 
         .grid-btn:active, .list-btn:active, .survey-btn:active { transform: scale(0.96); border-color: #ff8c00; background: rgba(255, 140, 0, 0.3); }
 
         .content-box {
-            width: 100%; height: 50vh; background: rgba(255, 255, 255, 0.05);
+            width: 100%; height: 52vh; background: rgba(255, 255, 255, 0.05);
             border-radius: 20px; padding: 3vh; border: 1px solid rgba(255, 255, 255, 0.1);
             overflow-y: auto; backdrop-filter: blur(10px); margin-bottom: 2vh;
         }
         .img-wrapper { width: 100%; max-height: 25vh; margin-bottom: 2vh; display: none; border: 1px solid var(--btn-border); border-radius: 10px; overflow: hidden; position: relative; }
         .detail-image { width: 100%; max-height: 25vh; object-fit: contain; opacity: 0; transition: opacity 0.5s; }
-        .detail-text { font-size: 2.2vh; line-height: 1.5; color: #ddd; }
+        .detail-text { font-size: 2.4vh; line-height: 1.6; color: #ddd; }
         
-        .btn-group { margin-top: auto; margin-bottom: 2vh; display: flex; gap: 15px; width: 100%; max-width: 400px; justify-content: center; }
+        .btn-group { margin-top: auto; margin-bottom: 2vh; display: flex; gap: 15px; width: 100%; max-width: 450px; justify-content: center; }
         .back-btn, .home-btn { 
-            height: 6.5vh; border-radius: 40px; font-size: 2vh; font-weight: bold;
+            height: 7.5vh; border-radius: 40px; font-size: 2.4vh; font-weight: bold;
             cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; flex: 1;
         }
-        .back-btn { background: rgba(255,255,255,0.05); border: 1px solid #444; color: #aaa; }
-        .home-btn { border: 1px solid var(--primary-glow) !important; color: var(--primary-glow) !important; background: rgba(0, 210, 255, 0.05) !important; }
-        .back-btn:active { background: rgba(255,255,255,0.15); }
+        .back-btn { background: rgba(255,255,255,0.05); border: 1px solid #555; color: #ccc; }
+        .home-btn { border: 2px solid var(--primary-glow) !important; color: var(--primary-glow) !important; background: rgba(0, 210, 255, 0.1) !important; }
 
         .skeleton { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(90deg, transparent, rgba(0,210,255,0.1), transparent); background-size: 200% 100%; animation: loading 1.5s infinite; }
         @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
@@ -118,7 +126,7 @@
 <div id="app">
     <div id="layer_grid" class="layer active">
         <header><h1>安美得武林帖</h1></header>
-        <p style="text-align:center; font-size:min(2.4vh, 4.5vw); color:var(--primary-glow); margin-bottom:2vh; line-height:1.4;">大外科內高手雲集，門派眾多，在開始前，請先告訴我閣下屬於哪一門派</p>
+        <p style="text-align:center; font-size:2.8vh; color:var(--primary-glow); margin-bottom:3vh; line-height:1.4;">大外科內高手雲集，門派眾多<br>請選擇閣下的門派</p>
         <div class="nine-grid">
             <button class="grid-btn" onclick="submitGrid('A')">骨科</button>
             <button class="grid-btn" onclick="submitGrid('B')">胸外</button>
@@ -130,18 +138,18 @@
             <button class="grid-btn" onclick="submitGrid('H')">消化外</button>
             <button class="grid-btn" onclick="submitGrid('I')">其他</button>
         </div>
-        <p id="grid-loading" style="margin-top:2vh; color:#ff8c00; display:none;">正在記錄...</p>
+        <p id="grid-loading" style="margin-top:2vh; color:#ff8c00; display:none; font-size:2vh;">正在記錄中...</p>
     </div>
 
     <div id="layer0" class="layer">
-        <header><h1>第一章：招式選擇</h1></header>
-        <p style="text-align:center; margin-bottom:4vh; font-size:min(3vh, 6vw); font-weight:bold; color:#ffffff; text-shadow: 0 0 10px rgba(0,210,255,0.8); line-height:1.4;">請問當傷口需要縫合時，<br>你會選擇哪一個招式？</p>
+        <header><h1>招式選擇</h1></header>
+        <p style="text-align:center; margin-bottom:5vh; font-size:3.5vh; font-weight:bold; color:#ffffff; text-shadow: 0 0 10px rgba(0,210,255,0.8); line-height:1.4;">請問當傷口需要縫合時，<br>你會選擇哪一個招式？</p>
         <div style="display:flex; flex-direction:column; width:100%; align-items:center; flex-grow:1;">
             <button class="survey-btn" onclick="submitChoice('A')">縫線 / 釘槍式</button>
             <button class="survey-btn" onclick="submitChoice('B')">Zipline 式</button>
             <button class="survey-btn" onclick="submitChoice('C')">組織膠式</button>
         </div>
-        <p id="survey-loading" style="color:#ff8c00; display:none; margin-bottom:2vh;">正在記錄...</p>
+        <p id="survey-loading" style="color:#ff8c00; display:none; margin-bottom:2vh;">記錄中...</p>
         <div class="btn-group">
             <button class="back-btn" onclick="goLayer('_grid')">◀ 返回門派選擇</button>
         </div>
@@ -149,7 +157,7 @@
 
     <div id="layer1" class="layer">
         <header><h1>A+med</h1></header>
-        <p style="text-align:center; margin-bottom:4vh; font-size:min(2.8vh, 5.5vw); font-weight:bold; color:#ffffff; text-shadow: 0 0 10px rgba(0,210,255,0.8); line-height:1.5;">歡迎來到安美得秘笈<br>請問閣下想了解哪一章節</p>
+        <p style="text-align:center; margin-bottom:5vh; font-size:3.2vh; font-weight:bold; color:#ffffff; text-shadow: 0 0 10px rgba(0,210,255,0.8); line-height:1.5;">歡迎來到安美得秘笈<br>請問閣下想了解哪一章節</p>
         <div style="display:flex; flex-direction:column; width:100%; align-items:center; flex-grow:1;">
             <button class="list-btn" onclick="goLayer(2, 'dressing')">敷 料 章</button>
             <button class="list-btn" onclick="goLayer(2, 'medicine')">藥 品 章</button>
@@ -161,7 +169,7 @@
     </div>
 
     <div id="layer2" class="layer">
-        <h1 id="category-title" style="font-size: 4.5vh; margin: 2vh 0; color: var(--primary-glow); text-align:center;"></h1>
+        <h1 id="category-title" style="font-size: 5vh; margin-bottom: 3vh; color: var(--primary-glow); text-align:center;"></h1>
         <div id="sub-menu-container" style="width:100%; display:flex; flex-direction:column; align-items:center; flex-grow:1; overflow-y:auto;"></div>
         <div class="btn-group">
             <button class="back-btn" onclick="goLayer(1)">◀ 上一頁</button>
@@ -170,7 +178,7 @@
     </div>
 
     <div id="layer3" class="layer">
-        <h1 id="detail-title" style="font-size: 3vh; margin: 1.5vh 0; text-align: center; color:#fff;"></h1>
+        <h1 id="detail-title" style="font-size: 3.5vh; margin-bottom: 2vh; text-align: center; color:#fff;"></h1>
         <div class="content-box">
             <div id="img-container" class="img-wrapper">
                 <div class="skeleton" id="skeleton"></div>
@@ -192,101 +200,3 @@
     let currentCategory = '';
 
     function submitGrid(choice) {
-        const msg = document.getElementById('grid-loading');
-        if(msg) msg.style.display = 'block';
-        fetch(URL_DEPT_STAT + "?choice=" + choice + "&t=" + new Date().getTime(), { mode: 'no-cors' });
-        setTimeout(() => {
-            if(msg) msg.style.display = 'none';
-            goLayer(0);
-        }, 150);
-    }
-
-    function submitChoice(choice) {
-        const msg = document.getElementById('survey-loading');
-        if(msg) msg.style.display = 'block';
-        fetch(URL_SKILL_STAT + "?choice=" + choice + "&t=" + new Date().getTime(), { mode: 'no-cors' });
-        setTimeout(() => {
-            if(msg) msg.style.display = 'none';
-            goLayer(1);
-        }, 150);
-    }
-
-    const data = {
-        dressing: {
-            title: "敷料系列",
-            items: [
-                { name: "葡聚醣的秘密", img: "https://Amed-TSA.github.io/Amed/A1.png", info: "【赫麗敷 安緹淨 抗菌傷口修護液】<br>醫療專用敷料|液態噴霧式敷料|主動式敷料|活性成分，濕潤傷口幫助癒合..." },
-                { name: "術後傷口好夥伴", img: "https://Amed-TSA.github.io/Amed/A2.png", info: "【赫麗敷 水凝膠手術傷口敷料】<br>防水透氣 | 方便使用 |舒適服貼..." },
-                { name: "還我好肌膚", img: "https://Amed-TSA.github.io/Amed/A3.png", info: "【赫麗敷 疤痕貼片】<br>親膚性佳、低過敏、不易刺激皮膚的醫療級感壓膠敷料..." },
-                { name: "赫麗敷保護你的咖投呼", img: "https://Amed-TSA.github.io/Amed/A4.png", info: "【赫麗敷 高滲液手術傷口敷料】<br>有效吸收傷口滲出血液及組織液..." },
-                { name: "惱人痔瘡別再來", img: "https://Amed-TSA.github.io/Amed/A5.png", info: "【西海 痔瘡傷口保護敷料】<br>幫助肛裂、痔瘡、產後痔瘡患者，用的安全、坐の舒適..." }
-            ]
-        },
-        medicine: { title: "藥品系列", 
-            items: [
-                { name: "雙效止痛 一針到位", img: "https://Amed-TSA.github.io/Amed/安捷適.png", info: "Combogesic專利比例結合Acetaminophen 1000mg 與 Ibuprofen 300mg..." },
-                { name: "多模式止痛黃金組合", img: "https://Amed-TSA.github.io/Amed/安捷適.png", info: "美國術後疼痛管理指引強烈建議 Acetaminophen + NSAIDs..." },
-                { name: "一針7天長效止痛", img: "https://Amed-TSA.github.io/Amed/納疼解.png", info: "Naldebain採用獨特緩釋劑型，單次注射即可維持 7 天穩定血中濃度。" },
-                { name: "無管線束縛加速復原", img: "https://Amed-TSA.github.io/Amed/納疼解.png", info: "Naldebain是「帶著走的止痛保護」，讓病患術後能輕鬆下床活動。" },
-                { name: "術後快速精準逆轉", img: "https://Amed-TSA.github.io/Amed/安速加.png", info: "Ansumma通過經濟部研發計畫，是首張國產Sugammadex。" }
-            ] 
-        },
-        device: { title: "醫材系列", 
-            items: [
-                { name: "easyEndo Powered Stapler", img: "https://Amed-TSA.github.io/Amed/電動吻合器.png", info: "電動鉗口開合、擊發與回刀，60度四段大轉角。" },
-                { name: "POLYSITE ECHO Port", img: "https://Amed-TSA.github.io/Amed/POLYSITE.png", info: "Hybrid Titanium & POM lightweight design..." }
-            ] }
-    };
-
-    function goLayer(layerId, category = '') {
-        const layers = document.querySelectorAll('.layer');
-        layers.forEach(l => { l.classList.remove('active'); l.style.opacity = '0'; });
-
-        setTimeout(() => {
-            let targetId = (layerId === '_grid') ? 'layer_grid' : 'layer' + layerId;
-            const target = document.getElementById(targetId);
-            if(target) {
-                target.classList.add('active');
-                setTimeout(() => target.style.opacity = '1', 50);
-            }
-
-            if (layerId === 2 && category) {
-                currentCategory = category;
-                const categoryData = data[category];
-                document.getElementById('category-title').innerText = categoryData.title;
-                const container = document.getElementById('sub-menu-container');
-                container.innerHTML = '';
-                categoryData.items.forEach(item => {
-                    const btn = document.createElement('button');
-                    btn.className = 'list-btn';
-                    btn.innerText = item.name;
-                    btn.onclick = () => showDetail(item.name, item.info, item.img);
-                    container.appendChild(btn);
-                });
-            }
-        }, 300);
-    }
-
-    function showDetail(title, info, imgSrc) {
-        goLayer(3);
-        document.getElementById('detail-title').innerText = title;
-        document.getElementById('detail-text').innerHTML = info;
-        document.getElementById('detail-back-btn').onclick = () => goLayer(2, currentCategory);
-
-        const wrapper = document.getElementById('img-container');
-        const imgTag = document.getElementById('detail-img');
-        const skeleton = document.getElementById('skeleton');
-
-        if (imgSrc && imgSrc.startsWith('http')) {
-            wrapper.style.display = 'block';
-            skeleton.style.display = 'block';
-            imgTag.style.opacity = '0';
-            imgTag.src = imgSrc;
-            imgTag.onload = () => { imgTag.style.opacity = '1'; skeleton.style.display = 'none'; };
-        } else { wrapper.style.display = 'none'; }
-        document.querySelector('.content-box').scrollTop = 0;
-    }
-</script>
-
-</body>
-</html>
