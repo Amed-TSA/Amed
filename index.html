@@ -10,6 +10,7 @@
             --primary-glow: #00d2ff;
             --btn-border: rgba(0, 210, 255, 0.5);
             --btn-bg: rgba(0, 210, 255, 0.15);
+            --orange-feedback: #ff8c00;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -62,43 +63,27 @@
         }
 
         .nine-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 15px;
-            width: 100%;
-            max-width: 500px;
-            margin: 1vh 0;
-            flex-grow: 1;
-            max-height: 55vh;
+            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+            gap: 15px; width: 100%; max-width: 500px; margin: 1vh 0; flex-grow: 1; max-height: 55vh;
         }
 
-        .grid-btn, .list-btn, .survey-btn {
+        .grid-btn, .list-btn, .survey-btn, .back-btn, .home-btn {
             background: var(--btn-bg);
             border: 2px solid var(--btn-border); border-radius: 15px;
             color: #fff; font-weight: bold; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
             backdrop-filter: blur(5px);
             text-align: center;
         }
         .grid-btn { font-size: 2.6vh; width: 100%; height: 100%; }
-        
-        .survey-btn, .list-btn { 
-            width: 90%; 
-            max-width: 450px; 
-            height: 9vh; 
-            margin-bottom: 2.5vh; 
-            font-size: 2.8vh; 
-            border-radius: 18px;
-            flex-shrink: 0;
-        }
+        .survey-btn, .list-btn { width: 90%; max-width: 450px; height: 9vh; margin-bottom: 2.5vh; font-size: 2.8vh; border-radius: 18px; flex-shrink: 0; }
 
-        /* --- 橘色點擊回饋特效 --- */
-        .grid-btn:active, .list-btn:active, .survey-btn:active, .back-btn:active, .home-btn:active { 
-            transform: scale(0.96); 
-            border-color: #ff8c00 !important; 
-            background: rgba(255, 140, 0, 0.3) !important; 
-            box-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+        /* --- 強化的橘色回饋樣式 --- */
+        .clicked {
+            transform: scale(0.94) !important;
+            border-color: var(--orange-feedback) !important;
+            background: rgba(255, 140, 0, 0.4) !important;
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.7) !important;
             color: #fff !important;
         }
 
@@ -112,12 +97,9 @@
         .detail-text { font-size: 2.4vh; line-height: 1.6; color: #ddd; }
         
         .btn-group { margin-top: auto; margin-bottom: 2vh; display: flex; gap: 15px; width: 100%; max-width: 450px; justify-content: center; flex-shrink: 0; }
-        .back-btn, .home-btn { 
-            height: 7.5vh; border-radius: 40px; font-size: 2.4vh; font-weight: bold;
-            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; flex: 1;
-        }
+        .back-btn, .home-btn { height: 7.5vh; border-radius: 40px; font-size: 2.4vh; font-weight: bold; flex: 1; }
         .back-btn { background: rgba(255,255,255,0.05); border: 1px solid #555; color: #ccc; }
-        .home-btn { border: 2px solid var(--primary-glow) !important; color: var(--primary-glow) !important; background: rgba(0, 210, 255, 0.1) !important; }
+        .home-btn { border: 2px solid var(--primary-glow); color: var(--primary-glow); background: rgba(0, 210, 255, 0.1); }
 
         .skeleton { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(90deg, transparent, rgba(0,210,255,0.1), transparent); background-size: 200% 100%; animation: loading 1.5s infinite; }
         @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
@@ -135,15 +117,15 @@
         <header><h1>安美得武林帖</h1></header>
         <p style="text-align:center; font-size:2.8vh; color:var(--primary-glow); margin-bottom:3vh; line-height:1.4;">大外科內高手雲集，門派眾多<br>請選擇閣下的門派</p>
         <div class="nine-grid">
-            <button class="grid-btn" onclick="submitGrid('A')">骨科</button>
-            <button class="grid-btn" onclick="submitGrid('B')">胸外</button>
-            <button class="grid-btn" onclick="submitGrid('C')">整外</button>
-            <button class="grid-btn" onclick="submitGrid('D')">乳外</button>
-            <button class="grid-btn" onclick="submitGrid('E')">泌尿外</button>
-            <button class="grid-btn" onclick="submitGrid('F')">心外</button>
-            <button class="grid-btn" onclick="submitGrid('G')">神外</button>
-            <button class="grid-btn" onclick="submitGrid('H')">消化外</button>
-            <button class="grid-btn" onclick="submitGrid('I')">其他</button>
+            <button class="grid-btn" onclick="submitGrid('A', this)">骨科</button>
+            <button class="grid-btn" onclick="submitGrid('B', this)">胸外</button>
+            <button class="grid-btn" onclick="submitGrid('C', this)">整外</button>
+            <button class="grid-btn" onclick="submitGrid('D', this)">乳外</button>
+            <button class="grid-btn" onclick="submitGrid('E', this)">泌尿外</button>
+            <button class="grid-btn" onclick="submitGrid('F', this)">心外</button>
+            <button class="grid-btn" onclick="submitGrid('G', this)">神外</button>
+            <button class="grid-btn" onclick="submitGrid('H', this)">消化外</button>
+            <button class="grid-btn" onclick="submitGrid('I', this)">其他</button>
         </div>
         <p id="grid-loading" style="margin-top:2vh; color:#ff8c00; display:none; font-size:2vh;">正在記錄中...</p>
     </div>
@@ -152,13 +134,13 @@
         <header><h1>招式選擇</h1></header>
         <p style="text-align:center; margin-bottom:5vh; font-size:3.5vh; font-weight:bold; color:#ffffff; text-shadow: 0 0 10px rgba(0,210,255,0.8); line-height:1.4;">請問當傷口需要縫合時，<br>你會選擇哪一個招式？</p>
         <div style="display:flex; flex-direction:column; width:100%; align-items:center; flex-grow:1;">
-            <button class="survey-btn" onclick="submitChoice('A')">縫線 / 釘槍式</button>
-            <button class="survey-btn" onclick="submitChoice('B')">Zipline 式</button>
-            <button class="survey-btn" onclick="submitChoice('C')">組織膠式</button>
+            <button class="survey-btn" onclick="submitChoice('A', this)">縫線 / 釘槍式</button>
+            <button class="survey-btn" onclick="submitChoice('B', this)">Zipline 式</button>
+            <button class="survey-btn" onclick="submitChoice('C', this)">組織膠式</button>
         </div>
         <p id="survey-loading" style="color:#ff8c00; display:none; margin-bottom:2vh;">記錄中...</p>
         <div class="btn-group">
-            <button class="back-btn" onclick="goLayer('_grid')">◀ 返回門派選擇</button>
+            <button class="back-btn" onclick="goLayer('_grid', '', this)">◀ 返回門派選擇</button>
         </div>
     </div>
 
@@ -166,12 +148,12 @@
         <header><h1>A+med</h1></header>
         <p style="text-align:center; margin-bottom:5vh; font-size:3.2vh; font-weight:bold; color:#ffffff; text-shadow: 0 0 10px rgba(0,210,255,0.8); line-height:1.5;">歡迎來到安美得秘笈<br>請問閣下想了解哪一章節</p>
         <div style="display:flex; flex-direction:column; width:100%; align-items:center; flex-grow:1;">
-            <button class="list-btn" onclick="goLayer(2, 'dressing')">敷 料 章</button>
-            <button class="list-btn" onclick="goLayer(2, 'medicine')">藥 品 章</button>
-            <button class="list-btn" onclick="goLayer(2, 'device')">醫 材 章</button>
+            <button class="list-btn" onclick="goLayer(2, 'dressing', this)">敷 料 章</button>
+            <button class="list-btn" onclick="goLayer(2, 'medicine', this)">藥 品 章</button>
+            <button class="list-btn" onclick="goLayer(2, 'device', this)">醫 材 章</button>
         </div>
         <div class="btn-group">
-            <button class="back-btn" onclick="goLayer(0)">◀ 返回問卷</button>
+            <button class="back-btn" onclick="goLayer(0, '', this)">◀ 返回問卷</button>
         </div>
     </div>
 
@@ -179,8 +161,8 @@
         <h1 id="category-title" style="font-size: 5vh; margin-bottom: 3vh; color: var(--primary-glow); text-align:center;"></h1>
         <div id="sub-menu-container" style="width:100%; display:flex; flex-direction:column; align-items:center; flex-grow:1; overflow-y:auto;"></div>
         <div class="btn-group">
-            <button class="back-btn" onclick="goLayer(1)">◀ 上一頁</button>
-            <button class="home-btn" onclick="goLayer('_grid')">⟲ 回首頁</button>
+            <button class="back-btn" onclick="goLayer(1, '', this)">◀ 上一頁</button>
+            <button class="home-btn" onclick="goLayer('_grid', '', this)">⟲ 回首頁</button>
         </div>
     </div>
 
@@ -195,7 +177,7 @@
         </div>
         <div class="btn-group">
             <button class="back-btn" id="detail-back-btn">◀ 上一頁</button>
-            <button class="home-btn" onclick="goLayer('_grid')">⟲ 回首頁</button>
+            <button class="home-btn" onclick="goLayer('_grid', '', this)">⟲ 回首頁</button>
         </div>
     </div>
 </div>
@@ -206,26 +188,40 @@
 
     let currentCategory = '';
 
-    function submitGrid(choice) {
-        const msg = document.getElementById('grid-loading');
-        if(msg) msg.style.display = 'block';
-        fetch(URL_DEPT_STAT + "?choice=" + choice + "&t=" + new Date().getTime(), { mode: 'no-cors' });
+    // 回饋邏輯：延遲跳頁以確保看到橘色回饋
+    function applyFeedback(el, callback) {
+        if(el) el.classList.add('clicked');
         setTimeout(() => {
-            if(msg) msg.style.display = 'none';
-            goLayer(0);
-        }, 300);
+            if(el) el.classList.remove('clicked');
+            callback();
+        }, 300); 
     }
 
-    function submitChoice(choice) {
-        const msg = document.getElementById('survey-loading');
-        if(msg) msg.style.display = 'block';
-        fetch(URL_SKILL_STAT + "?choice=" + choice + "&t=" + new Date().getTime(), { mode: 'no-cors' });
-        setTimeout(() => {
-            if(msg) msg.style.display = 'none';
-            goLayer(1);
-        }, 300);
+    function submitGrid(choice, el) {
+        applyFeedback(el, () => {
+            const msg = document.getElementById('grid-loading');
+            if(msg) msg.style.display = 'block';
+            fetch(URL_DEPT_STAT + "?choice=" + choice + "&t=" + new Date().getTime(), { mode: 'no-cors' });
+            setTimeout(() => {
+                if(msg) msg.style.display = 'none';
+                goLayer(0);
+            }, 300);
+        });
     }
 
+    function submitChoice(choice, el) {
+        applyFeedback(el, () => {
+            const msg = document.getElementById('survey-loading');
+            if(msg) msg.style.display = 'block';
+            fetch(URL_SKILL_STAT + "?choice=" + choice + "&t=" + new Date().getTime(), { mode: 'no-cors' });
+            setTimeout(() => {
+                if(msg) msg.style.display = 'none';
+                goLayer(1);
+            }, 300);
+        });
+    }
+
+    // --- 完全還原你最初提供的內容，不作任何刪減 ---
     const data = {
         dressing: {
             title: "敷料系列",
@@ -234,11 +230,12 @@
                 { name: "術後傷口好夥伴", img: "https://Amed-TSA.github.io/Amed/A2.png", info: "【赫麗敷 水凝膠手術傷口敷料】<br>防水透氣 | 方便使用 |舒適服貼<br> 獨家三層複合式結構內層A+高分子水凝膠，滲液吸收能力佳，維持傷口濕潤均衡狀態，加速傷口癒合。多款尺寸，符合手術傷口類別。" },
                 { name: "還我好肌膚", img: "https://Amed-TSA.github.io/Amed/A3.png", info: "【赫麗敷 疤痕貼片】<br>親膚性佳、低過敏、不易刺激皮膚的醫療級感壓膠敷料。針對縱向疤痕單向伸展設計，可使關節部位保有正常的伸展活動；同時橫向非彈性設計能有效固定疤痕壓制疤痕增生，並幫助新生組織恢復平整，預防疤痕產生。" },
                 { name: "擾人滲液不要來", img: "https://Amed-TSA.github.io/Amed/A4.png", info: "【赫麗敷 高滲液手術傷口敷料】<br>有效吸收傷口滲出血液及組織液，A+高分子水膠使傷口床維持在濕潤均衡狀態；具有親膚矽膠膜(矽感壓膠)，可避免移除敷料時周圍皮膚損傷。柔軟性佳具延展性，關節部位使用能完整服貼，特別適用於關節術後恢復。" },
-                { name: "痔瘡，珍重再見", img: "https://Amed-TSA.github.io/Amed/A5.png", info: "【西海 痔瘡傷口保護敷料】<br>幫助肛裂、痔瘡、產後痔瘡患者，用的安全、坐の舒適，形成保護膜、有效幫助傷口癒合。" }, // <-- 這裡補上了漏掉的逗點
-                { name: "術後感控新選擇", img: "https://Amed-TSA.github.io/Amed/安緹淨.png", info: "【赫麗敷 安緹淨 抗菌傷口敷料】超薄、透明、吸濕，具有三層結構：內層為A+抗菌高分子水膠吸收層，可協助傷口床處於濕潤均衡狀態，幫助傷口癒合；內含抗菌成分PHMB，抑制細菌的滋生、減少感染及皮膚微生物菌落形成，可抑制多種傷口常見細菌：金黃色葡萄球菌、綠膿桿菌、克雷伯氏肺炎桿菌、抗藥性金黃色葡萄球菌。" }
+                { name: "痔瘡，珍重再見", img: "https://Amed-TSA.github.io/Amed/A5.png", info: "【西海 痔瘡傷口保護敷料】<br>幫助肛裂、痔瘡、產後痔瘡患者，用的安全、坐の舒適，形成保護膜、有效幫助傷口癒合。" },
+                { name: "術後感控新選擇", img: "https://Amed-TSA.github.io/Amed/安緹淨.png", info: "【赫麗敷 安緹淨 抗菌傷口敷料】<br>超薄、透明、吸濕，具有三層結構：內層為A+抗菌高分子水膠吸收層，可協助傷口床處於濕潤均衡狀態，幫助傷口癒合；內含抗菌成分PHMB，抑制細菌的滋生、減少感染及皮膚微生物菌落形成，可抑制多種傷口常見細菌：金黃色葡萄球菌、綠膿桿菌、克雷伯氏肺炎桿菌、抗藥性金黃色葡萄球菌。" }
             ]
         },
-        medicine: { title: "藥品系列", 
+        medicine: { 
+            title: "藥品系列", 
             items: [
                 { name: "雙效止痛 一針到位", img: "https://Amed-TSA.github.io/Amed/安捷適.png", info: "Combogesic專利比例結合Acetaminophen 1000mg 與 Ibuprofen 300mg，同時阻斷中樞與周邊痛覺，發揮 1+1>2 的多模式止痛優勢。<br>靜脈輸注15分鐘快速起效，提供單方2倍的止痛強度，為術後疼痛建立最強的第一道防線。" },
                 { name: "多模式止痛黃金組合", img: "https://Amed-TSA.github.io/Amed/安捷適.png", info: "美國術後疼痛管理指引強烈建議：<br>只要沒有禁忌症，Acetaminophen + NSAIDs 應作為術後多模式止痛組合的基礎。<br>透過雙機轉協同止痛，能顯著提升止痛品質，減少鴉片類藥物使用量與副作用，實現更安全、更高效的疼痛管理策略。" },
@@ -247,65 +244,74 @@
                 { name: "術後快速精轉逆轉", img: "https://Amed-TSA.github.io/Amed/安速加.png", info: "Ansumma通過經濟部研發計畫，是首張國產Sugammadex。<br>單次注射即可快速完全逆轉神經肌肉阻斷，大幅降低殘餘肌鬆風險，確保病患在術後關鍵時刻都能安全、順利地甦醒。" }
             ] 
         },
-        device: { title: "醫材系列", 
+        device: { 
+            title: "醫材系列", 
             items: [
                 { name: "easyEndo Powered Stapler", img: "https://Amed-TSA.github.io/Amed/電動吻合器.png", 
                   info: "easyEndo Powered Stapler<br><b>Features</b><br>．電動鉗口開合、擊發與回刀<br>．60度四段大轉角<br>．提供Tri-Staple釘倉選項(褐/紫/黑)<br><b>Advantages</b><br>．減少晃動、省力<br>．提升操作便利性<br>．使血液供應更好<br><b>Benefits</b><br>．降低晃動造成組織損傷之風險<br>．減少因角度不足而須做額外調整<br>．降低選釘考量" },
                 { name: "POLYSITE ECHO Port", img: "https://Amed-TSA.github.io/Amed/POLYSITE.png", 
-                  info: "<b>POLYSITE ECHO Implantable Port:</b> 為癌症化療患者重要的長期靜脈輸注裝置，以臨床操作與患者管理需求為核心設計，強調植入安全性與穿刺成功率之提升<br>A. 提供三種規格尺寸底座設計。<br>B. 採鈦金屬與 POM（聚甲醛）複合結構設計，兼具鈦金屬接觸化療藥物的高安全性，以及POM材質的輕量化特性。<br>C. 搭配超音波引導技術，有助於提升穿刺成功率，並降低術後併發症發生風險。<br>D. 全規格支援耐高壓顯影劑注射，可用於CT/MRI高壓顯影劑注射需求。<br>E. 提供Silicone與 Polyurethane（PU）兩種導管材質。" }
-            ] }
+                  info: "<b>POLYSITE ECHO Implantable Port:</b><br>為癌症化療患者重要的長期靜脈輸注裝置，以臨床操作與患者管理需求為核心設計，強調植入安全性與穿刺成功率之提升<br>A. 提供三種規格尺寸底座設計。<br>B. 採鈦金屬與 POM（聚甲醛）複合結構設計，兼具鈦金屬接觸化療藥物的高安全性，以及POM材質的輕量化特性。<br>C. 搭配超音波引導技術，有助於提升穿刺成功率，並降低術後併發症發生風險。<br>D. 全規格支援耐高壓顯影劑注射，可用於CT/MRI高壓顯影劑注射需求。<br>E. 提供Silicone與 Polyurethane（PU）兩種導管材質。" }
+            ] 
+        }
     };
 
-    function goLayer(id, category = '') {
-        const layers = document.querySelectorAll('.layer');
-        layers.forEach(l => { l.classList.remove('active'); l.style.opacity = '0'; });
+    function goLayer(id, category = '', el = null) {
+        const proceed = () => {
+            const layers = document.querySelectorAll('.layer');
+            layers.forEach(l => { l.classList.remove('active'); l.style.opacity = '0'; });
 
-        setTimeout(() => {
-            let targetId = (id === '_grid') ? 'layer_grid' : 'layer' + id;
-            const target = document.getElementById(targetId);
-            if(target) {
-                target.classList.add('active');
-                setTimeout(() => target.style.opacity = '1', 50);
-            }
+            setTimeout(() => {
+                let targetId = (id === '_grid') ? 'layer_grid' : 'layer' + id;
+                const target = document.getElementById(targetId);
+                if(target) {
+                    target.classList.add('active');
+                    setTimeout(() => target.style.opacity = '1', 50);
+                }
 
-            if (id === 2 && category) {
-                currentCategory = category;
-                const categoryData = data[category];
-                document.getElementById('category-title').innerText = categoryData.title;
-                const container = document.getElementById('sub-menu-container');
-                container.innerHTML = '';
-                categoryData.items.forEach(item => {
-                    const btn = document.createElement('button');
-                    btn.className = 'list-btn';
-                    btn.innerText = item.name;
-                    btn.onclick = () => showDetail(item.name, item.info, item.img);
-                    container.appendChild(btn);
-                });
-            }
-        }, 300);
+                if (id === 2 && category) {
+                    currentCategory = category;
+                    const categoryData = data[category];
+                    document.getElementById('category-title').innerText = categoryData.title;
+                    const container = document.getElementById('sub-menu-container');
+                    container.innerHTML = '';
+                    categoryData.items.forEach(item => {
+                        const btn = document.createElement('button');
+                        btn.className = 'list-btn';
+                        btn.innerText = item.name;
+                        btn.onclick = (e) => showDetail(item.name, item.info, item.img, e.currentTarget);
+                        container.appendChild(btn);
+                    });
+                }
+            }, 300);
+        };
+
+        if (el) applyFeedback(el, proceed);
+        else proceed();
     }
 
-    function showDetail(title, info, imgSrc) {
-        goLayer(3);
-        document.getElementById('detail-title').innerText = title;
-        document.getElementById('detail-text').innerHTML = info;
-        document.getElementById('detail-back-btn').onclick = () => goLayer(2, currentCategory);
+    function showDetail(title, info, imgSrc, el) {
+        applyFeedback(el, () => {
+            goLayer(3);
+            document.getElementById('detail-title').innerText = title;
+            document.getElementById('detail-text').innerHTML = info;
+            document.getElementById('detail-back-btn').onclick = (e) => goLayer(2, currentCategory, e.currentTarget);
 
-        const wrapper = document.getElementById('img-container');
-        const imgTag = document.getElementById('detail-img');
-        const skeleton = document.getElementById('skeleton');
+            const wrapper = document.getElementById('img-container');
+            const imgTag = document.getElementById('detail-img');
+            const skeleton = document.getElementById('skeleton');
 
-        if (imgSrc && imgSrc.startsWith('http')) {
-            wrapper.style.display = 'block';
-            skeleton.style.display = 'block';
-            imgTag.style.opacity = '0';
-            imgTag.src = imgSrc;
-            imgTag.onload = () => { 
-                imgTag.style.opacity = '1'; 
-                skeleton.style.display = 'none'; 
-            };
-        } else { wrapper.style.display = 'none'; }
-        document.querySelector('.content-box').scrollTop = 0;
+            if (imgSrc && imgSrc.startsWith('http')) {
+                wrapper.style.display = 'block';
+                skeleton.style.display = 'block';
+                imgTag.style.opacity = '0';
+                imgTag.src = imgSrc;
+                imgTag.onload = () => { 
+                    imgTag.style.opacity = '1'; 
+                    skeleton.style.display = 'none'; 
+                };
+            } else { wrapper.style.display = 'none'; }
+            document.querySelector('.content-box').scrollTop = 0;
+        });
     }
 </script>
 
